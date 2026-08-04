@@ -1,0 +1,4 @@
+- "map-peripheral-id-to-irq-vector-address"
+- "distinguish-nvic-enable-from-pending-state"
+- "compute-nvic-ipr-shpr-register-location"
+- "reason-about-priority-grouping-and-preemption"

@@ -1,0 +1,1 @@
+Traced the nRF52833 Instantiation table's peripheral-ID/IRQ mapping through the Cortex-M4 exception model, deriving NVIC's enable/pending/priority/preemption mechanics, the IPR/SHPR register model, VTOR's alignment constraint, and a level-sensitive interrupt re-entry edge case.

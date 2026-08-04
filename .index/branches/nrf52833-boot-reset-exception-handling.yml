@@ -1,0 +1,8 @@
+title: "nRF52833 Boot, Reset & Exception Handling"
+sessions:
+  - "Reset & Clock Startup Behavior (nRF52833, micro:bit v2)"
+  - "ARM Cortex-M4 Exception Model & NVIC (nRF52833, micro:bit v2)"
+frontier:
+  - "ARM Cortex-M4 Exception Model & NVIC (nRF52833, micro:bit v2)"
+explicit_future_targets:
+  - "Reset & Clock Initialization (nRF52833, micro:bit v2)"

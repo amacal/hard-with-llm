@@ -1,0 +1,46 @@
+date: "2026-08-04"
+title: "ARM Cortex-M4 Exception Model & NVIC (nRF52833, micro:bit v2)"
+session:
+  file: —
+  source: "ARM Cortex-M4 Generic User Guide (DUI0553B), §2.3 Exception model (exception states, exception types, vector table, exception priorities, interrupt priority grouping, exception entry and return, stacking); §4.2 NVIC registers (ISER, ICER, ISPR, ICPR, IABR, IPR, STIR, hardware/software control of interrupts); §4.3 VTOR, AIRCR, SHPR1; nRF52833 Product Specification v1.6, §4.2.4 Instantiation (Table 4)"
+  status: completed
+  attempted:
+    - "Study the ARM Cortex-M4 exception model and NVIC register model from the Generic User Guide, and connect it to the nRF52833's peripheral instantiation table, continuing from the prior session's reset-vector groundwork."
+  explored:
+    - "The mapping from a peripheral's Instantiation-table ID to its IRQ number, exception number, and vector table address, worked through concretely for RTC0 (ID 11)."
+    - "The independence of the enabled state (ISER) from the pending state, and the two causes of pending (a peripheral interrupt request or software)."
+    - "The distinction between level-sensitive and pulse interrupt signal behavior on NVIC's hardware latch."
+    - "The 8-word exception stack frame and which registers are excluded from automatic stacking."
+    - "Fixed versus configurable exception priority and how preemption arbitration is affected."
+    - "Priority grouping via AIRCR's PRIGROUP field and the group-priority/subpriority split, tested against a worked numeric example."
+    - "VTOR's TBLOFF field and the power-of-two alignment constraint it imposes, tested against a worked example requiring a 48-entry table."
+    - "Why SHPR1-3 exist as a register set separate from IPR, tied to CMSIS's negative IRQ-number convention for system handlers."
+    - "An edge case: a level-sensitive interrupt whose peripheral-side event flag is never cleared, and why an NVIC_ICPR write alone cannot break the resulting re-entry loop."
+  tried:
+    - "Answered RTC0's vector-table address before locating the exact register/bit-field pages, then corrected the derivation using the ID/IRQ/vector-offset formula."
+    - "Worked the ISER0-bit-11 and IPR2[31:24] register/bit derivations for RTC0 using the same IRQ DIV/MOD packing pattern applied to both register families."
+  corrections:
+    - "Predicted RTC0's NVIC-relevant address was 0x4000B000 (RTC0's peripheral base/memory-mapped address, read from the wrong column of the Instantiation table); corrected to 0x0000006C, derived from the vector table's 0x40+4n formula applied to RTC0's IRQ number (11), after distinguishing a peripheral's MMIO base address from its exception vector address."
+    - "Predicted the registers automatically stacked on exception entry were R0-R4; corrected against Figure 2-3 to the actual eight words: xPSR, PC, LR, R12, R3, R2, R1, R0."
+    - "Predicted that widening the number of address bits reserved for vector-table alignment scaled the required alignment linearly (n x 128 bytes); corrected to the actual power-of-two/exponential relationship, using a comparison between reserving 8 versus 9 low bits."
+  bugs_found: —
+  completed:
+    - "Traced RTC0's peripheral ID (11, from nRF52833 PS Table 4) through the IRQ number, exception number, and vector table address (0x0000006C) using the Cortex-M4 vector table's offset formula."
+    - "Derived the distinction between the enabled state (NVIC_ISER0 bit 11) and the pending state (caused by a peripheral interrupt request or software, independent of the enable bit), citing the NVIC usage-hints text on page 4-9."
+    - "Traced the exception-entry stacking sequence (Figure 2-3's 8-word frame) and the callee-saved handling of R4-R11."
+    - "Derived the fixed-vs-configurable priority scheme (Table 2-16) and the preemption/nesting rationale for bounded worst-case interrupt latency."
+    - "Computed RTC0's priority-register location (NVIC_IPR2 bits [31:24]) using the IRQ DIV/MOD-4 packing formula (Table 4-9)."
+    - "Worked a priority-grouping example (PRIGROUP = 0b011, priorities 0x50 vs 0x5F) showing equal group priority prevents preemption despite differing subpriority (Table 4-18)."
+    - "Derived VTOR's power-of-two alignment constraint from TBLOFF's forced-zero low bits (Table 4-16), worked through a 48-entry vector table example requiring 64-word/256-byte alignment."
+    - "Derived why SHPR1-3 exist separately from IPR, tracing MemManage/BusFault/UsageFault's negative CMSIS IRQ numbers (Table 2-16) against the IPR indexing formula."
+    - "Traced a level-sensitive-interrupt edge case: an uncleared peripheral event flag causes NVIC's latch to resample HIGH on ISR return, re-entering the pending state, and NVIC_ICPR alone cannot break this because it only clears the NVIC-side latch, not the peripheral-side signal source."
+    - "Completed the three-part session sign-off: the physical signal/latch/pipeline-redirect trace, the necessity of ISER/IPR/peripheral-side enable, and the level-sensitive re-entry edge case."
+  not_completed:
+    - "STIR (Software Trigger Interrupt Register) and SHPR2/SHPR3's specific bit layouts were referenced but not opened or derived in detail."
+    - "Whether exception entry always waits for the current instruction to complete, versus interrupting some multi-cycle instructions mid-execution, was raised but not resolved against a specific datasheet citation."
+    - "No implementation/source file was started; this remains a pure datasheet-study session."
+  open_questions:
+    - "Whether exception entry can interrupt a multi-cycle instruction mid-execution, or always waits for an instruction boundary, was not resolved against a specific section."
+  notes:
+    - "This session is the explicit follow-up named in the prior session's notes: the ARM Cortex-M4 Generic User Guide, absent from docs/ at that time, has since been added and was used throughout this session."
+    - "All datasheet pages cited were rendered via pdftoppm/pdftocairo into .tmp/ and viewed directly before being quoted in the dialogue."

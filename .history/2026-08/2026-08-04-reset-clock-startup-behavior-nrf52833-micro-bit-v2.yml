@@ -1,0 +1,39 @@
+date: "2026-08-04"
+title: "Reset & Clock Startup Behavior (nRF52833, micro:bit v2)"
+session:
+  file: —
+  source: "nRF52833 Product Specification v1.6, §4.2 Memory map; §5.3.3 System OFF mode; §5.3.6 Reset (incl. §5.3.6.1 Power-on reset, §5.3.6.8 Reset behavior); §5.3.7.11 RESETREAS; §5.4 CLOCK control (§5.4.1 HFCLK controller, §5.4.2 LFCLK controller, §5.4.3.22-23 HFXODEBOUNCE/LFXODEBOUNCE)"
+  status: completed
+  attempted:
+    - "Derive the ARM Cortex-M4 boot/reset mechanism from first principles, then study the nRF52833-specific reset sources and HFCLK/LFCLK clock startup behavior directly from the Product Specification."
+  explored:
+    - "The ARM vector table mechanism (initial SP/PC words) and the Thumb-bit convention on exception vectors, including the fault category taken when it is violated."
+    - "The reset-behavior matrix (§5.3.6.8) across 7 reset sources and 9 reset targets, and why GPIO configuration is exempted from reset on wakeup from System OFF."
+    - "The System OFF mode description and its wake sources."
+    - "The power-on reset release condition."
+    - "The RESETREAS cumulative-bitmask register and a chained-reset firmware scenario motivating cumulative-vs-overwrite behavior."
+    - "The HFCLK controller's HFINT-default vs. HFXO-explicit-start model, and why HFXO is described as a 64 MHz oscillator controlled by a 32 MHz crystal."
+    - "The LFCLK controller's automatic LFRC-to-LFXO bridging behavior, compared against HFXODEBOUNCE vs LFXODEBOUNCE timing constants."
+    - "Why the RADIO peripheral specifically requires HFXO rather than HFINT."
+  tried:
+    - "Checked several candidate pages (p.63, p.65) before locating the System OFF mode description at p.67."
+    - "Checked p.68 before locating the exact power-on-reset release condition at p.69."
+  corrections:
+    - "Predicted RESETREAS would be overwritten by the most recent reset ('last reset wins'); observed it is cumulative, with each source setting an independent bit cleared only by software or by power-on/brownout reset."
+    - "Predicted the 32 MHz-to-64 MHz HFXO relationship was produced by clock division; corrected — division cannot raise frequency, so the relationship requires multiplication, though the internal mechanism is not documented in this datasheet."
+    - "Predicted HFXO services the CPU's very first instruction after reset; corrected back to HFINT, reversing an answer already established correctly earlier in the same session."
+  bugs_found: —
+  completed:
+    - "Traced the ARM Cortex-M4 vector-table/reset mechanism (SP from 0x00000000, PC from 0x00000004, Thumb-bit encoding) against the datasheet's memory map (Figure 2, p.20)."
+    - "Read and quoted the reset-behavior matrix (§5.3.6.8, p.70) and derived the design rationale for its GPIO-retention asymmetry."
+    - "Read and quoted the RESETREAS register bit layout (§5.3.7.11, p.75) and derived its cumulative-behavior design rationale."
+    - "Read the System OFF mode (§5.3.3, p.67) and Power-on reset (§5.3.6.1, p.69) descriptions."
+    - "Read the CLOCK peripheral overview (Figure 22, p.82), HFCLK controller (§5.4.1), LFCLK controller (§5.4.2), and HFXODEBOUNCE/LFXODEBOUNCE registers (p.94), deriving the HF/LF startup asymmetry rationale from their debounce timing constants."
+    - "Completed the three-part session sign-off: full physical reset-to-clock-startup trace, the Thumb-bit necessity/HardFault consequence, and the RADIO-requires-HFXO edge case."
+  not_completed:
+    - "HFCLKSTAT/HFCLKRUN/LFCLKSTAT/LFCLKRUN/LFCLKSRCCOPY register bit-layouts and the LFCLKSRC truth table (p.85) were identified but not opened this session."
+  open_questions:
+    - "How HFXO's internal 32 MHz-to-64 MHz frequency conversion is implemented; the datasheet does not document this."
+  notes:
+    - "The ARM Cortex-M4 Generic User Guide is not yet present in docs/; the nRF52833 Product Specification defers to it for CPU-core-level detail and it will be needed before a future session goes deeper into the exception/interrupt model."
+    - "docs/ was added to .gitignore this session."

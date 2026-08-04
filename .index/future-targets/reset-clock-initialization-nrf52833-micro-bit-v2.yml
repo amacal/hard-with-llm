@@ -1,0 +1,6 @@
+title: "Reset & Clock Initialization (nRF52833, micro:bit v2)"
+status: not-completed
+mentioned_by:
+  - "Reset & Clock Startup Behavior (nRF52833, micro:bit v2)"
+evidence:
+  - ".history/2026-08/2026-08-04-reset-clock-startup-behavior-nrf52833-micro-bit-v2.yml's not_completed field: no implementation/source file was started, remaining HFCLKSTAT/HFCLKRUN/LFCLKSTAT/LFCLKRUN/LFCLKSRCCOPY register bit-layouts and the LFCLKSRC truth table (p.85) were deferred, and a future implementation session applying this session's material was explicitly surfaced during the session as future work"

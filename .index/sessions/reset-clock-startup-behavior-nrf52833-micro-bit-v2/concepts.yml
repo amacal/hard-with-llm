@@ -1,0 +1,5 @@
+- "reset"
+- "clocks"
+- "boot-sequence"
+- "power-management"
+- "memory-mapped-io"

@@ -1,0 +1,1 @@
+Derived the ARM Cortex-M4 vector-table/reset mechanism from first principles and studied the nRF52833's reset-source behavior (RESETREAS) and HFCLK/LFCLK clock startup sequencing directly from the Product Specification.

@@ -1,0 +1,1 @@
+Studied the CLOCK peripheral's LFCLKSRC truth table, LFSYNT fractional divider, task-triggered-vs-actual-state register pairs, and LFCLKSRCCOPY directly from the nRF52833 Product Specification, finishing material deferred from the Reset & Clock Startup Behavior session.

@@ -1,0 +1,6 @@
+title: "LFRC Calibration (nRF52833, micro:bit v2)"
+status: not-completed
+mentioned_by:
+  - "CLOCK Peripheral Register Model (nRF52833, micro:bit v2)"
+evidence:
+  - ".history/2026-08/2026-08-05-clock-peripheral-register-model-nrf52833-micro-bit-v2.yml's not_completed field: the LFRC calibration mechanism (CAL task, calibration timer CTSTART/CTSTOP/CTIV/CTTO/CTSTARTED/CTSTOPPED) was identified but explicitly deferred to a future session."

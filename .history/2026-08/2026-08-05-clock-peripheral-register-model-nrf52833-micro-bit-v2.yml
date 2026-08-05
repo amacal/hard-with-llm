@@ -1,0 +1,32 @@
+date: "2026-08-05"
+title: "CLOCK Peripheral Register Model (nRF52833, micro:bit v2)"
+session:
+  file: —
+  source: "nRF52833 Product Specification v1.6, §5.4.2 LFCLK controller (incl. §5.4.2.5 LFSYNT) & §5.4.3.16-21 Registers (HFCLKRUN, HFCLKSTAT, LFCLKRUN, LFCLKSTAT, LFCLKSRCCOPY, LFCLKSRC)"
+  status: completed
+  attempted:
+    - "Finish the CLOCK peripheral register material deferred by \"Reset & Clock Startup Behavior\": the LFCLKSRC truth table and the HFCLKRUN/HFCLKSTAT/LFCLKRUN/LFCLKSTAT/LFCLKSRCCOPY register bit-layouts."
+  explored:
+    - "Table 20 (LFCLKSRC configuration truth table, p.85) across all three SRC values (LFRC, LFXO, LFSYNT) and the role of the EXTERNAL and BYPASS fields."
+    - "LFSYNT's non-integer 64,000,000 / 32,768 = 1953.125 divide ratio and a fractional-average dithering mechanism to produce it from an integer counter."
+    - "The task-triggered-flag vs actual-physical-state register distinction, introduced via a car-ignition-key analogy, then applied to LFCLKRUN.STATUS vs LFCLKSTAT.STATE."
+    - "A concrete LFCLKSRCCOPY scenario: LFCLK running on LFXO, stopped, then LFCLKSRC rewritten to RC before LFCLKSTART is re-triggered."
+    - "The physical consequence of using LFCLK-driven peripherals (RTC0) before LFCLKSTAT.STATE reaches Running."
+    - "The consequence of writing LFCLKSRC while LFCLK is running, reasoning toward a clock-multiplexer glitch hazard."
+  tried: —
+  corrections:
+    - "Predicted LFCLKSRCCOPY updates only after LFCLK reaches the Running state following the debounce/startup delay; corrected to: it latches at the moment LFCLKSTART is triggered, in sync with whatever LFCLKSRC held at that instant, before any startup delay."
+    - "Named the task-triggered/actual-state registers for a LFCLKSTART scenario as HFCLKRUN.STATUS/HFCLKSTAT.STATE; corrected to the LFCLK-domain equivalents, LFCLKRUN.STATUS/LFCLKSTAT.STATE."
+  bugs_found: —
+  completed:
+    - "Read and quoted Table 20 (LFCLKSRC configuration truth table, §5.4.2, p.85) and derived the EXTERNAL/BYPASS field semantics from its rows."
+    - "Derived LFSYNT's fractional-average divider mechanism from the exact 1953.125 ratio and traced its accuracy dependency on the HFCLK source (HFXO vs HFINT)."
+    - "Read and quoted HFCLKRUN/HFCLKSTAT (§5.4.3.16-17, p.92) and LFCLKRUN/LFCLKSTAT (§5.4.3.18-19, p.93), establishing the task-triggered vs actual-state register distinction."
+    - "Read and quoted LFCLKSRCCOPY (§5.4.3.20, p.93) and worked a concrete stop/reconfigure scenario distinguishing it from LFCLKSRC."
+    - "Completed the three-part session sign-off: the full LFCLKSTART-to-Running physical trace, the design rationale for waiting on LFCLKSTAT.STATE before relying on LFCLK-driven peripherals, and the LFCLKSRC-write-while-running edge case."
+  not_completed:
+    - "LFRC calibration mechanism (§5.4.2.2-5.4.2.3, p.85-86, Figure 24: CAL task and calibration timer CTSTART/CTSTOP/CTIV/CTTO/CTSTARTED/CTSTOPPED) was identified but explicitly deferred to a future session."
+  open_questions:
+    - "The exact on-chip consequence of writing LFCLKSRC while LFCLK is running is not stated by the datasheet; reasoned toward a plausible clock-multiplexer glitch mechanism, but this remains unconfirmed."
+  notes:
+    - "This session finishes the material explicitly deferred by \"Reset & Clock Startup Behavior\"'s not_completed field."

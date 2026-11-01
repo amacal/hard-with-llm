@@ -1,5 +1,6 @@
 title: "ARM Cortex-M4 Exception Model & NVIC (nRF52833, micro:bit v2)"
 kind: datasheet-study
+status: "demonstrated"
 target: microbit-v2
 file: —
 source: "ARM Cortex-M4 Generic User Guide (DUI0553B), §2.3 Exception model & §4.2-4.3 NVIC Peripherals; nRF52833 Product Specification v1.6, §4.2.4 Instantiation"

@@ -1,5 +1,6 @@
 title: "Reset & Clock Startup Behavior (nRF52833, micro:bit v2)"
 kind: datasheet-study
+status: "demonstrated"
 target: microbit-v2
 file: —
 source: "nRF52833 Product Specification v1.6, §5.3.6 Reset & §5.4 CLOCK control"

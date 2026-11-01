@@ -1,5 +1,6 @@
 title: "CLOCK Peripheral Register Model (nRF52833, micro:bit v2)"
 kind: datasheet-study
+status: "demonstrated"
 target: microbit-v2
 file: —
 source: "nRF52833 Product Specification v1.6, §5.4.2 LFCLK controller (incl. §5.4.2.5 LFSYNT) & §5.4.3.16-21 Registers"
